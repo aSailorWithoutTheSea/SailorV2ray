@@ -3,7 +3,7 @@ name: Send V2Ray Configs to Telegram
 on:
   schedule:
     - cron: "0 * * * *"  # اجرای هر ساعت
-  workflow_dispatch:       # اجازه‌ی اجرای دستی
+  workflow_dispatch:       # امکان اجرای دستی
 
 jobs:
   send:
@@ -19,7 +19,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install python-telegram-bot requests
+        run: pip install python-telegram-bot==13.7 requests
 
       - name: Run script
         env:
