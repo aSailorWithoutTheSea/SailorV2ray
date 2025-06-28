@@ -7,11 +7,11 @@ import os
 RAW_URL = "https://raw.githubusercontent.com/MahsaNetConfigTopic/config/refs/heads/main/xray_final.txt"
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 CHANNEL_ID = os.environ["CHANNEL_ID"]
-COUNT_PER_RUN = 4           # هر اجرا 4 کانفیگ ارسال شود
-BATCH_SIZE = 4             # همه کانفیگ‌ها در یک پیام (پس batch_size = count_per_run)
-DELAY_BETWEEN_MESSAGES = 1  # فاصله در اینجا معنایی ندارد چون فقط یک پیام ارسال می‌شود
+COUNT_PER_RUN = 4           # تعداد کانفیگ ارسالی در هر اجرا
+BATCH_SIZE = 4             # تعداد کانفیگ در هر پیام (همه رو یکجا می‌فرسته)
+DELAY_BETWEEN_MESSAGES = 1  # فاصله بین پیام‌ها (اینجا فقط یک پیام ارسال می‌شود)
 
-# خواندن کانفیگ‌ها
+# دریافت کانفیگ‌ها از لینک
 response = requests.get(RAW_URL)
 lines = [line.strip() for line in response.text.splitlines() if line.strip()]
 total_lines = len(lines)
@@ -41,7 +41,7 @@ try:
 except Exception as e:
     print(f"❌ خطا در ارسال پیام: {e}")
 
-# ذخیره اندیس جدید
+# ذخیره اندیس جدید یا بازگشت به اول لیست
 new_index = 0 if end_index >= total_lines else end_index
 with open(index_file, "w") as f:
     f.write(str(new_index))
