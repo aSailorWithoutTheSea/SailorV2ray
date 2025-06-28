@@ -13,9 +13,12 @@ def main():
         content = response.text.strip()
         lines = content.splitlines()
 
+        # فقط خطوط 10 تا 60 رو انتخاب کن (یعنی ایندکس‌های 9 تا 59)
+        selected_lines = lines[9:60]
+
         bot = Bot(token=bot_token)
 
-        for line in lines:
+        for line in selected_lines:
             if line.strip():
                 try:
                     bot.send_message(chat_id=channel_id, text=line)
