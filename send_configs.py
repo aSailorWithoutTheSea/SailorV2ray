@@ -1,44 +1,47 @@
-import os
-import time
 import requests
+import time
 from telegram import Bot
-from telegram.error import RetryAfter, TimedOut
+import os
 
-def main():
-    bot_token = os.getenv("BOT_TOKEN")
-    channel_id = os.getenv("CHANNEL_ID")
+# تنظیمات
+RAW_URL = "https://raw.githubusercontent.com/MahsaNetConfigTopic/config/refs/heads/main/xray_final.txt"
+BOT_TOKEN = os.environ["BOT_TOKEN"]
+CHANNEL_ID = os.environ["CHANNEL_ID"]
+COUNT_PER_RUN = 4           # هر اجرا 4 کانفیگ ارسال شود
+BATCH_SIZE = 4             # همه کانفیگ‌ها در یک پیام (پس batch_size = count_per_run)
+DELAY_BETWEEN_MESSAGES = 1  # فاصله در اینجا معنایی ندارد چون فقط یک پیام ارسال می‌شود
 
-    url = "https://raw.githubusercontent.com/MahsaNetConfigTopic/config/refs/heads/main/xray_final.txt"
+# خواندن کانفیگ‌ها
+response = requests.get(RAW_URL)
+lines = [line.strip() for line in response.text.splitlines() if line.strip()]
+total_lines = len(lines)
 
-    response = requests.get(url)
-    if response.status_code == 200:
-        content = response.text.strip()
-        lines = content.splitlines()
+# خواندن اندیس آخرین کانفیگ ارسال شده
+index_file = "last_index.txt"
+try:
+    with open(index_file, "r") as f:
+        start_index = int(f.read().strip())
+except:
+    start_index = 0
 
-        total = len(lines)
-        bot = Bot(token=bot_token)
+end_index = min(start_index + COUNT_PER_RUN, total_lines)
 
-        for i, line in enumerate(lines, start=1):
-            if line.strip():
-                try:
-                    if '#' in line:
-                        line = line.split('#')[0]
-                    modified_line = f"{line}#@HedwingV2ray"
-                    message = f"[{i}/{total}]\n{modified_line}"
+bot = Bot(token=BOT_TOKEN)
 
-                    bot.send_message(chat_id=channel_id, text=message)
-                    time.sleep(2)  # تأخیر استاندارد بین پیام‌ها
-                except RetryAfter as e:
-                    wait_time = int(e.retry_after)
-                    print(f"⏳ Flood control: صبر کن {wait_time} ثانیه...")
-                    time.sleep(wait_time)
-                except TimedOut:
-                    print(f"⚠️ تایم‌اوت در پیام {i}، تلاش مجدد بعد از 10 ثانیه...")
-                    time.sleep(10)
-                except Exception as e:
-                    print(f"❌ خطا در ارسال پیام {i}: {e}")
-    else:
-        print("❌ خطا در دریافت فایل کانفیگ:", response.status_code)
+batch_configs = lines[start_index:end_index]
+batch_texts = []
+for config in batch_configs:
+    if not config.startswith("#"):
+        batch_texts.append(f"@HedwingV2ray\n{config}")
+message_text = "\n\n".join(batch_texts)
 
-if __name__ == "__main__":
-    main()
+try:
+    bot.send_message(chat_id=CHANNEL_ID, text=message_text)
+    print(f"✅ پیام برای کانفیگ‌های {start_index + 1} تا {end_index} ارسال شد.")
+except Exception as e:
+    print(f"❌ خطا در ارسال پیام: {e}")
+
+# ذخیره اندیس جدید
+new_index = 0 if end_index >= total_lines else end_index
+with open(index_file, "w") as f:
+    f.write(str(new_index))
