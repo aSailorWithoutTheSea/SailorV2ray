@@ -48,7 +48,19 @@ configs_to_send = [] # لیستی برای نگهداری کانفیگ‌های 
 if start_index < end_index: # اطمینان از اینکه کانفیگی برای ارسال وجود دارد
     for i in range(start_index, end_index):
         config_line = unquote(lines[i]) # دیکد کردن خط کانفیگ (مثلا حذف %20 از لینک)
-        message = f"@HedwingV2ray\n{config_line}" # ساختار پیام برای هر کانفیگ
+
+        # پیدا کردن موقعیت # در خط کانفیگ
+        hash_index = config_line.rfind('#')
+
+        if hash_index != -1:
+            # اگر # پیدا شد، قسمت نام را تغییر می‌دهیم
+            modified_config_line = config_line[:hash_index] + "#@HedwingV2ray"
+        else:
+            # اگر # پیدا نشد، به انتهای خط اضافه می‌کنیم (اگر نامی وجود نداشت)
+            modified_config_line = config_line + "#@HedwingV2ray"
+
+        # پیام فقط شامل خط کانفیگ اصلاح شده است، بدون @HedwingV2ray اضافی
+        message = modified_config_line
         configs_to_send.append(message)
 else:
     print("هیچ کانفیگی برای ارسال در این اجرا وجود ندارد یا به انتهای لیست رسیده‌ایم.")
