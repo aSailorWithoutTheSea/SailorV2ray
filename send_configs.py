@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 from telegram import Bot
 
@@ -13,19 +14,24 @@ def main():
         content = response.text.strip()
         lines = content.splitlines()
 
-        # فقط خطوط 10 تا 60 رو انتخاب کن (یعنی ایندکس‌های 9 تا 59)
-        selected_lines = lines[9:60]
-
+        total = len(lines)
         bot = Bot(token=bot_token)
 
-        for line in selected_lines:
+        for i, line in enumerate(lines, start=1):
             if line.strip():
                 try:
-                    bot.send_message(chat_id=channel_id, text=line)
+                    # حذف اسم قبلی اگر وجود دارد
+                    if '#' in line:
+                        line = line.split('#')[0]
+                    modified_line = f"{line}#@HedwingV2ray"
+
+                    message = f"[{i}/{total}]\n{modified_line}"
+                    bot.send_message(chat_id=channel_id, text=message)
+                    time.sleep(1)
                 except Exception as e:
-                    print("خطا در ارسال پیام:", e)
+                    print(f"❌ خطا در ارسال پیام {i}: {e}")
     else:
-        print("خطا در دریافت فایل کانفیگ:", response.status_code)
+        print("❌ خطا در دریافت فایل کانفیگ:", response.status_code)
 
 if __name__ == "__main__":
     main()
