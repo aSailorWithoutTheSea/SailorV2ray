@@ -1,29 +1,36 @@
-name: Send V2Ray Configs to Telegram
+name: Send Configs to Telegram
 
 on:
   schedule:
-    - cron: "0 * * * *"  # اجرای هر ساعت
-  workflow_dispatch:       # امکان اجرای دستی
+    - cron: "*/30 * * * *"  # هر ۳۰ دقیقه یک بار اجرا شود
+  workflow_dispatch:
 
 jobs:
-  send:
+  send-configs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-         python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
 
+    - name: Install dependencies
+      run: pip install python-telegram-bot requests
 
-      - name: Install dependencies
-        run: pip install python-telegram-bot==13.7 requests
+    - name: Run send_configs.py
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+      run: python send_configs.py
 
-      - name: Run script
-        env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
-        run: python send_configs.py
+    - name: Commit and push last_index.txt
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add last_index.txt
+        git commit -m "Update last_index"
+        git push
