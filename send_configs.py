@@ -1,33 +1,33 @@
 import requests
 import os
 import time
-from telegram import Bot
+from telegram.bot import Bot  # نسخه مخصوص 13.15
 
 # تنظیمات اولیه
 RAW_URL = "https://raw.githubusercontent.com/MahsaNetConfigTopic/config/refs/heads/main/xray_final.txt"
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHANNEL_ID = os.environ.get("CHANNEL_ID")
-COUNT_PER_RUN = 4  # در هر اجرا ۴ کانفیگ بفرست
-DELAY_BETWEEN_MESSAGES = 1  # فاصله بین پیام‌ها بر حسب ثانیه
+COUNT_PER_RUN = 4
+DELAY_BETWEEN_MESSAGES = 1
 
 # خواندن لیست کانفیگ‌ها از ریموت
 response = requests.get(RAW_URL)
 lines = [line.strip() for line in response.text.splitlines() if line.strip()]
 total_lines = len(lines)
 
-# خواندن ایندکس قبلی از فایل
+# خواندن ایندکس قبلی
 try:
     with open("last_index.txt", "r") as f:
         start_index = int(f.read().strip())
 except:
     start_index = 0
 
-# محاسبه بازه خطوط این اجرا
+# محاسبه بازه این اجرا
 end_index = start_index + COUNT_PER_RUN
 if end_index > total_lines:
     end_index = total_lines
 
-# آماده‌سازی پیام ترکیبی
+# ساخت پیام
 configs = []
 for i in range(start_index, end_index):
     config = lines[i]
@@ -35,7 +35,7 @@ for i in range(start_index, end_index):
         config = f"@HedwingV2ray\n{config}"
     configs.append(config)
 
-# ارسال پیام یکجا
+# ارسال پیام
 if configs:
     message = "\n\n".join(configs)
     bot = Bot(token=BOT_TOKEN)
@@ -47,10 +47,7 @@ if configs:
 else:
     print("❌ هیچ کانفیگی برای ارسال نبود.")
 
-# بروزرسانی ایندکس
-new_index = end_index
-if new_index >= total_lines:
-    new_index = 0  # برگشت به ابتدا
-
+# به‌روزرسانی اندیس
+new_index = end_index if end_index < total_lines else 0
 with open("last_index.txt", "w") as f:
     f.write(str(new_index))
