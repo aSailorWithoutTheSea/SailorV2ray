@@ -1,0 +1,28 @@
+name: Send V2Ray Configs to Telegram
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # اجرای هر ساعت
+  workflow_dispatch:       # اجازه‌ی اجرای دستی
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install python-telegram-bot requests
+
+      - name: Run script
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+        run: python send_configs.py
