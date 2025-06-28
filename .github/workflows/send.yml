@@ -5,6 +5,10 @@ on:
     - cron: "*/30 * * * *"  # هر 30 دقیقه یکبار اجرا می‌شود
   workflow_dispatch:
 
+# اینجا باید permissions را اضافه کنید!
+permissions:
+  contents: write # این خط به workflow اجازه push کردن تغییرات را می‌دهد
+
 jobs:
   send-configs:
     runs-on: ubuntu-latest
@@ -28,11 +32,11 @@ jobs:
         run: python send_configs.py
 
       - name: Commit and push last_index.txt
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        # این قسمت را تغییر دهید تا از PAT استفاده نکند
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add last_index.txt
           git commit -m "Update last_index" || echo "No changes to commit"
-          git push https://x-access-token:${PAT_TOKEN}@github.com/aSailorWithoutTheSea/SailorV2ray.git HEAD:main
+          # از GITHUB_TOKEN پیش‌فرض استفاده کنید
+          git push
