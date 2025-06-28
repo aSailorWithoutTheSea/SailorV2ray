@@ -6,7 +6,7 @@ def main():
     bot_token = os.getenv("BOT_TOKEN")
     channel_id = os.getenv("CHANNEL_ID")
 
-    url = "https://github.com/Epodonios/v2ray-configs/blob/main/Sub11.txt"
+    url = "https://raw.githubusercontent.com/MahsaNetConfigTopic/config/refs/heads/main/xray_final.txt"
 
     response = requests.get(url)
     if response.status_code == 200:
