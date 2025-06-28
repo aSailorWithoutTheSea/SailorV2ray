@@ -54,12 +54,12 @@ if start_index < end_index: # اطمینان از اینکه کانفیگی بر
 
         if hash_index != -1:
             # اگر # پیدا شد، قسمت نام را تغییر می‌دهیم
-            modified_config_line = config_line[:hash_index] + "#@HedwingV2ray"
+            modified_config_line = config_line[:hash_index] + "#@HedwigV2ray"
         else:
             # اگر # پیدا نشد، به انتهای خط اضافه می‌کنیم (اگر نامی وجود نداشت)
-            modified_config_line = config_line + "#@HedwingV2ray"
+            modified_config_line = config_line + "#@HedwigV2ray"
 
-        # پیام فقط شامل خط کانفیگ اصلاح شده است، بدون @HedwingV2ray اضافی
+        # پیام فقط شامل خط کانفیگ اصلاح شده است، بدون @HedwigV2ray اضافی
         message = modified_config_line
         configs_to_send.append(message)
 else:
