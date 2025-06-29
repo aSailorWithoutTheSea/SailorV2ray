@@ -1,9 +1,7 @@
 name: Send Configs to Telegram
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"  # هر 30 دقیقه یکبار اجرا می‌شود
-  workflow_dispatch:         # اجرا به‌صورت دستی
+  workflow_dispatch:         # اجرا به‌صورت دستی (برای cron-job.org)
   push:                      # اجرا هنگام push به شاخه main
     branches:
       - main
