@@ -73,7 +73,7 @@ if configs_to_send:
 if final_message and BOT_TOKEN and CHANNEL_ID:
     try:
         bot = Bot(token=BOT_TOKEN) # ایجاد شیء بات تلگرام
-        bot.send_message(chat_id=CHANNEL_ID, text=final_message) # ارسال پیام
+        bot.send_message(chat_id=CHANNEL_ID, text=f"<pre>{final_message}</pre>", parse_mode="HTML") # ارسال پیام
         print(f"✅ ارسال موفق: از ایندکس {start_index} تا {end_index-1} (خطوط {start_index+1} تا {end_index})")
     except Exception as e:
         print(f"❌ خطا در ارسال پیام به تلگرام: {e}")
