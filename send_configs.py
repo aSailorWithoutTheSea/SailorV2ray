@@ -45,13 +45,12 @@ if end_index > total_lines:
 
 # مرحله ۳: ساختن پیام برای ارسال
 configs_to_send = [] # لیستی برای نگهداری کانفیگ‌های آماده ارسال
-if start_index < end_index: # اطمینان از اینکه کانفیگی برای ارسال وجود دارد
-    for i in range(start_index, end_index):
+for i in range(start_index, end_index):
     config_line = unquote(lines[i])  # دیکد کردن خط کانفیگ
 
-    # رد کردن کانفیگ‌هایی که Shadowsocks هستند
-    if config_line.startswith("ss://"):
-        continue  # اگر کانفیگ shadowsocks بود، نادیده بگیر
+    cleaned_line = config_line.strip().lower()  # حذف فاصله و حروف اضافی
+    if cleaned_line.startswith("ss://"):
+        continue  # اگر Shadowsocks بود، برو سراغ بعدی
 
     # پیدا کردن موقعیت # در خط کانفیگ
     hash_index = config_line.rfind('#')
@@ -63,6 +62,7 @@ if start_index < end_index: # اطمینان از اینکه کانفیگی بر
 
     message = modified_config_line
     configs_to_send.append(message)
+
 
 else:
     print("هیچ کانفیگی برای ارسال در این اجرا وجود ندارد یا به انتهای لیست رسیده‌ایم.")
