@@ -4,7 +4,7 @@ from telegram import Bot
 from urllib.parse import unquote
 
 # تنظیمات اصلی
-RAW_URL = "https://raw.githubusercontent.com/aSailorWithoutTheSea/SailorV2ray/refs/heads/main/sublink.txt"
+RAW_URL = "https://raw.githubusercontent.com/MahsaNetConfigTopic/config/refs/heads/main/xray_final.txt"
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 COUNT_PER_RUN = 8
